@@ -2,65 +2,84 @@ package edu.upc.dsa.database.util;
 
 public class QueryHelper {
 
-    public static String createQueryINSERT(Object entity) {
+    public static String createQueryINSERT(Object object)
+    {
+        String query = "INSERT INTO " + object.getClass().getSimpleName() + " (";
 
-        StringBuffer sb = new StringBuffer("INSERT INTO ");
-        sb.append(entity.getClass().getSimpleName()).append(" ");
-        sb.append("(");
+        String[] fields = ObjectHelper.getFields(object);
 
-        String [] fields = ObjectHelper.getFields(entity);
+        query = query + fields[0];
 
-        sb.append("ID");
-        for (String field: fields) {
-            sb.append(",").append(field);
-        }
+        for(int i = 1; i < fields.length; i++)
+            query = query + "," + fields[i];
 
-        sb.append(") VALUES (?");
 
-        for (String field: fields) {
-            sb.append(",?");
-        }
+        query = query + ") VALUES (?";
 
-        sb.append(")");
-        System.out.println(sb.toString());
-        return sb.toString();
+        for(int i = 0; i < fields.length - 1; i++)
+            query = query + ",?";
+
+        query = query + ");";
+
+        return query;
     }
 
-    public static String createQuerySELECT(Object entity) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("SELECT * FROM ").append(entity.getClass().getSimpleName());
-        sb.append(" WHERE ID = ?");
-        System.out.println(sb.toString());
-        return sb.toString();
-    }
-    public static String createQueryDELETE(Object entity){
-        StringBuffer sb = new StringBuffer();
-        sb.append("DELETE * FROM ").append(entity.getClass().getSimpleName());
-        sb.append(" WHERE ID = ?");
-        System.out.println(sb.toString());
-        return  sb.toString();
+    public static String createQueryDELETE(Object object)
+    {
+        String query = "DELETE FROM " + object.getClass().getSimpleName() + " WHERE id=?;";
+
+        return query;
     }
 
-    public static String createQueryUPDATE(Object entity){
-        /*StringBuffer sb = new StringBuffer("UPDATE ");
-        sb.append(entity.getClass().getSimpleName());
-        String [] fields = ObjectHelper.getFields(entity);
-        sb.append(" SET (").append("ID");
-        for (String field: fields) {
-            sb.append(",").append(field);
+    public static String createQuerySELECT(Class theClass, String field)
+    {
+        String query = "SELECT * from " + theClass.getSimpleName() + " WHERE " + field +
+                "=?;";
+
+        return query;
+    }
+
+    public static String createQueryUPDATE(Object object)
+    {
+        String query = "UPDATE " + object.getClass().getSimpleName() + " SET ";
+        String[] fields = ObjectHelper.getFields(object);
+
+        for(String f : fields)
+        {
+            if(!f.equals("id"))
+                query = query + f + "=?, ";
         }
 
-        sb.append(") WHERE ID = ?");
-        System.out.println(sb.toString());
-        return sb.toString();
+        //erase the last ,
+        query = query.substring(0,query.length()-2);
 
-         */
-        StringBuffer sb = new StringBuffer("UPDATE ");
-        sb.append(entity.getClass().getSimpleName());
-        sb.append(" SET ").append("salary = ?");
-        sb.append(" WHERE ID = ?");
-        System.out.println(sb.toString());
-        return sb.toString();
+        query = query + " WHERE id=?;";
+
+        return query;
+    }
+
+    public static String createQueryUPDATEAttribute(Class theClass, String attribute)
+    {
+        String query = "UPDATE " + theClass.getSimpleName() + " SET ";
+        query = query + attribute + "=? WHERE id=?;";
+
+        return query;
+    }
+
+    public static String createQueryDELETE(Class theClass)
+    {
+        String query = "DELETE FROM " + theClass.getSimpleName() +
+                "WHERE id=?;";
+
+        return query;
+    }
+
+    public static String createQueryDELETEWithCondition(Class theClass, String attribute)
+    {
+        String query = "DELETE FROM "+ theClass.getSimpleName() + " WHERE id=? AND " +
+                attribute + "=?;";
+
+        return query;
     }
 
 }

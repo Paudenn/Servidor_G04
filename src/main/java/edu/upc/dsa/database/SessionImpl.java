@@ -21,7 +21,7 @@ public class SessionImpl implements Session {
         this.conn = conn;
     }
 
-    public void save(Object entity) {
+    public int save(Object entity) {
 
         String insertQuery = QueryHelper.createQueryINSERT(entity);
         log.info(insertQuery);
@@ -30,25 +30,30 @@ public class SessionImpl implements Session {
 
         try {
             pstm = conn.prepareStatement(insertQuery);
-            pstm.setObject(1, 0);
-            int i = 2;
+            int i = 1;
 
             for (String field: ObjectHelper.getFields(entity)) {
-                pstm.setObject(i++, ObjectHelper.getter(entity, field));
+                if(field.equals("id")){
+                    pstm.setNull(1,Types.NULL);
+
+                }
+                else {
+                    java.lang.Object object = ObjectHelper.getValue(entity, field);
+                    pstm.setObject(i,object);
+                    i++;
+                }
             }
             log.info(pstm.toString());
-            pstm.executeUpdate();
-           // pstm.executeQuery();
+            pstm.executeQuery();
 
+
+        } catch (SQLIntegrityConstraintViolationException e)
+        {
+            return -1;
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
         }
+        return 0;
 
     }
 
@@ -61,7 +66,7 @@ public class SessionImpl implements Session {
     }
 
     public Object get(Object o, int ID) {
-        Class theClass = o.getClass();
+        /*Class theClass = o.getClass();
         String selectQuery = QueryHelper.createQuerySELECT(o);
         log.info(selectQuery);
 
@@ -95,13 +100,116 @@ public class SessionImpl implements Session {
         }
 
         return o;
+
+         */
+        return  null;
     }
 
-    public void update(Object object) {
 
+    public int update(Object entity) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQueryUPDATE(entity);
+        ResultSet resultSet;
+
+        try
+        {
+            preparedStatement = conn.prepareStatement(query);
+            String[] fields = ObjectHelper.getFields(entity);
+
+            int i = 1;
+
+            for(String f : fields)
+            {
+                if(!f.equals("id")) {
+                    preparedStatement.setObject(i, ObjectHelper.getValue(entity, f));
+                    i++;
+                }
+            }
+            preparedStatement.setObject(fields.length, ObjectHelper.getValue(entity, "id"));
+
+            boolean error = preparedStatement.execute();
+            if(!error)
+                return 0;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return -1;
     }
 
-    public void delete(Object object) {
+    public int update(Class theClass, int id, String attribute, Object value) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQueryUPDATEAttribute(theClass, attribute);
+        ResultSet resultSet;
+
+        try {
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setObject(1, value);
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+        return 0;
+    }
+
+    public int delete(Class theClass, int id, String attribute, Object value) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQueryDELETEWithCondition(theClass, attribute);
+
+        try
+        {
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            preparedStatement.setObject(2, value);
+
+            preparedStatement.executeQuery();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return -2;
+        }
+
+        return 0;
+    }
+
+    public HashMap getBy(Class theClass, String attr, Object value) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQuerySELECT(theClass, attr);
+        HashMap<String, java.lang.Object> attributes = new HashMap<>();;
+
+        try
+        {
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setObject(1, value);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.first()) {
+                ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+
+                for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
+                    attributes.put(resultSetMetaData.getColumnName(i + 1), resultSet.getObject(i + 1));
+                }
+            }
+            else
+                return null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return attributes;
+
 
     }
 

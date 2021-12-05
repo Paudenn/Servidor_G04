@@ -5,7 +5,7 @@ public class User {
     private String name;
     private String password;
     private String mail;
-    private Boolean active;
+    //private Boolean active;
     private int highScore;
 
     public User(){}
@@ -14,8 +14,9 @@ public class User {
         this.name = name;
         this.password = password;
         this.mail = mail;
-        this.active = false;
+        //this.active = false;
         this.highScore = 0;
+
     }
 
     public String getName() {return name;}
@@ -30,9 +31,9 @@ public class User {
 
     public void setMail(String mail) {this.mail = mail;}
 
-    public Boolean getActive() {return active;}
+   // public Boolean getActive() {return active;}
 
-    public void setActive(Boolean active) {this.active = active;}
+    // public void setActive(Boolean active) {this.active = active;}
 
     public int getHighScore() {return highScore;}
 

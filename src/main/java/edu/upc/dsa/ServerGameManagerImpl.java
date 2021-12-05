@@ -14,6 +14,7 @@ public class ServerGameManagerImpl implements ServerGameManager {
     private HashMap<String, User> users;
     protected List<Items> items;
     final static Logger logger = Logger.getLogger(ServerGameManagerImpl.class);
+    private Session session = null;
 
     private ServerGameManagerImpl() {
 
@@ -43,11 +44,11 @@ public class ServerGameManagerImpl implements ServerGameManager {
 
     @Override
     public User addUser(String name, String password, String email) {
-        Session session = null;
+
         try {
             session = FactorySession.openSession();
             User user=new User(name,password,email);
-            session.save(user);
+           session.save(user);
             logger.info("name: "+ name +"password: "+ "email: "+email);
         }
         catch (Exception e)
@@ -57,7 +58,9 @@ public class ServerGameManagerImpl implements ServerGameManager {
         finally {
             session.close();
         }
+
         return this.addUser(new User(name,password,email));
+
     }
 
     @Override
@@ -68,7 +71,7 @@ public class ServerGameManagerImpl implements ServerGameManager {
             if(users.get(name).getPassword().equals(password))
             {
                 logger.info("Login successful!");
-                users.get(name).setActive(true);
+               // users.get(name).setActive(true);
             }
             else logger.info("Wrong Password");
         }
@@ -93,7 +96,7 @@ public class ServerGameManagerImpl implements ServerGameManager {
     public void logOutUser(String name) {
         if (users.containsKey(name))
         {
-            users.get(name).setActive(false);
+            //users.get(name).setActive(false);
         }
         else logger.info("Wrong name");
 

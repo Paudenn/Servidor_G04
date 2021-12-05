@@ -22,9 +22,25 @@ public class ObjectHelper {
         return sFields;
 
     }
+    public static Object getValue (Object object, String property) {
+
+        try {
+
+            Field field = object.getClass().getDeclaredField(property);
+            field.setAccessible(true);
+            Object value = field.get(object);
+
+            return value;
+        }
+        catch(NoSuchFieldException | IllegalAccessException e)
+        {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
 
-    public static void setter(Object object, String property, Object value) throws NoSuchMethodException {
+    /*public static void setter(Object object, String property, Object value) throws NoSuchMethodException {
         // Method // invoke
         System.out.println("Entra a la funcio setter.");
         Object ret = null;

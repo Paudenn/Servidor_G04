@@ -24,18 +24,6 @@ public class FactorySession {
     private static Connection getConnection() {
         Connection conn = null;
         try {
-            /*String url = "jdbc:mysql://localhost/dsag04?autoReconnect=true&useSSL=false";
-            String password = "Mazinger72";
-            String user = "root";
-           conn =
-                    DriverManager.getConnection(url,user,password);
-            System.out.println("Connectat a la bbdd correctament.");
-
-             */
-
-
-
-
 
             conn =
                     DriverManager.getConnection("jdbc:mariadb://localhost:3306/dsag04", "root", "Mazinger72");
