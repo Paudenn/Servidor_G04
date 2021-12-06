@@ -1,5 +1,6 @@
 package edu.upc.dsa.database;
 
+import edu.upc.dsa.models.Items;
 import edu.upc.dsa.models.User;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public interface Session<E> {
     int update(Class theClass, int id, String attribute, Object value);
     int delete(Class theClass, String attribute, Object value);
     User getBy(Class theClass, String attr, Object value);
+    Items getItems (Class theClass, String attr, Object value);
 
 
     List<Object> findAll(Class theClass);

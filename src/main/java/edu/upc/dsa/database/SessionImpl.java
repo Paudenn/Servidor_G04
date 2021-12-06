@@ -3,6 +3,7 @@ package edu.upc.dsa.database;
 import edu.upc.dsa.ServerGameManagerImpl;
 import edu.upc.dsa.database.util.ObjectHelper;
 import edu.upc.dsa.database.util.QueryHelper;
+import edu.upc.dsa.models.Items;
 import edu.upc.dsa.models.User;
 import org.apache.log4j.Logger;
 
@@ -155,7 +156,6 @@ public class SessionImpl implements Session {
         PreparedStatement preparedStatement = null;
         String query = QueryHelper.createQuerySELECT(theClass, attr);
         User attributes = new User();
-
         try
         {
             preparedStatement = conn.prepareStatement(query);
@@ -165,11 +165,8 @@ public class SessionImpl implements Session {
                     preparedStatement.setObject(1, object);
                     attributes.setName(object.toString());
                 }
-
             }
-
             ResultSet resultSet = preparedStatement.executeQuery();
-
             if(resultSet.first()) {
                 ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                 attributes.setPassword(resultSet.getObject(2).toString());
@@ -179,6 +176,34 @@ public class SessionImpl implements Session {
 
                     //attributes.add(resultSetMetaData.getColumnName(1), resultSet.getObject(i + 1));
                 }
+            }
+            else
+                return null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return attributes;
+    }
+    public Items getItems(Class theClass, String attr, Object value) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQuerySELECT(theClass, attr);
+        Items attributes = new Items();
+        try
+        {
+            preparedStatement = conn.prepareStatement(query);
+            for (String field : ObjectHelper.getFields(value)) {
+                if (field.equals("name")) {
+                    java.lang.Object object = ObjectHelper.getValue(value, field);
+                    preparedStatement.setObject(1, object);
+                    attributes.setName(object.toString());
+                }
+            }
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.first()) {
+                ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                attributes.setDescription(resultSet.getObject(2).toString());
             }
             else
                 return null;

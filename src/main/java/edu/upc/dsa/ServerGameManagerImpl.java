@@ -150,41 +150,79 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
     @Override
     public Items addItem(Items items) {
-        logger.info("new Object " + items.getName() +": " + items.getDescription());
-        this.items.add(items);
-        logger.info("new Object added");
-        return items;
-    }
+
+            logger.info("new Object " + items.getName() + ": " + items.getDescription());
+            this.items.add(items);
+            logger.info("new Object added");
+            return items;
+        }
     @Override
     public Items addItem(String name, String descritpion) {
-        logger.info("new Object " + name +": " + descritpion);
+        try {
+            session = FactorySession.openSession();
+            Items it = new Items(name, descritpion);
+            Items attributes = session.getItems(it.getClass(), "name", it);
+            if (attributes == null) {
+                session.save(it);
+                logger.info("new Object " + name + ": " + descritpion);
 
-        logger.info("new Object added");
-        return this.addItem(new Items(name,descritpion));
+                logger.info("new Object added");
+            }
+        }
+        catch (Exception e)
+        {
+            logger.info("Error al insertar objeto");
+        }
+        finally {
+            session.close();
+        }
+        return this.addItem(new Items(name, descritpion));
     }
 
     @Override
     public void deleteItems(String name) {
-        String items = (name);
-        if (items==null) {
-            logger.warn("not found " + items);
+        try {
+            session = FactorySession.openSession();
+            Items it = new Items(name, null);
+            Items attributes = session.getItems(it.getClass(), "name", it);
+            if (attributes != null) {
+                session.delete(it.getClass(),"description",attributes);
+            }
+            if (name == null) {
+                logger.warn("not found " + name);
+            } else logger.info(items + " deleted ");
+
+            this.items.remove(items);
         }
-        else logger.info(items+" deleted ");
-
-        this.items.remove(items);
-
+        catch (Exception e)
+        {
+            logger.info("Error al insertar objeto");
+        }
+        finally {
+            session.close();
+        }
     }
     public Items getItem(String name) {
         logger.info("getObject("+name+")");
-
-        for (Items items: this.items) {
-            if (items.equals(name)) {
-                logger.info("getObject("+name+"): "+items);
-
-                return items;
+        try {
+            session = FactorySession.openSession();
+            Items it = new Items(name, null);
+            Items attributes = session.getItems(it.getClass(), "name", it);
+            if (attributes != null) {
+                logger.info("Item: " + attributes);
+                return attributes;
+            } else {
+                logger.info("Item not found");
+                return null;
             }
         }
-        logger.warn("not found " + name);
+        catch (Exception e)
+        {
+            logger.info("Error al insertar objeto");
+        }
+        finally {
+            session.close();
+        }
         return null;
     }
 

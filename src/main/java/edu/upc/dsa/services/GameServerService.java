@@ -33,8 +33,6 @@ public class GameServerService {
             this.gsm.addItem("Taladro","Atraviesa");
 
         }
-
-
     }
     @POST
     @ApiOperation(value = "Register a user", notes = "asdasd")
@@ -99,8 +97,6 @@ public class GameServerService {
         return Response.status(201).entity(entity).build()  ;
 
     }
-
-
 /*
     @GET
     @ApiOperation(value = "get all Track", notes = "asdasd")
@@ -134,6 +130,19 @@ public class GameServerService {
         else  return Response.status(201).entity(user).build();
     }
 
+    @DELETE
+    @ApiOperation(value = "delete a Item", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @Path("/deleteItem/{name}")
+    public Response deleteItems(@PathParam("name") String name) {
+
+        if (gsm.getItem(name)==null) return Response.status(404).build();
+        else gsm.deleteItems(name);
+        return Response.status(201).build();
+    }
     @DELETE
     @ApiOperation(value = "delete a User", notes = "asdasd")
     @ApiResponses(value = {
