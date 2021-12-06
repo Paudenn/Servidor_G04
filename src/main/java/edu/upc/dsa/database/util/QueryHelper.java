@@ -26,7 +26,7 @@ public class QueryHelper {
 
     public static String createQueryDELETE(Object object)
     {
-        String query = "DELETE FROM " + object.getClass().getSimpleName() + " WHERE id=?;";
+        String query = "DELETE FROM " + object.getClass().getSimpleName() + " WHERE name=?;";
 
         return query;
     }
@@ -76,7 +76,7 @@ public class QueryHelper {
 
     public static String createQueryDELETEWithCondition(Class theClass, String attribute)
     {
-        String query = "DELETE FROM "+ theClass.getSimpleName() + " WHERE id=? AND " +
+        String query = "DELETE FROM "+ theClass.getSimpleName() + " WHERE name=? AND " +
                 attribute + "=?;";
 
         return query;

@@ -48,8 +48,11 @@ public class ServerGameManagerImpl implements ServerGameManager {
         try {
             session = FactorySession.openSession();
             User user=new User(name,password,email);
-           session.save(user);
-            logger.info("name: "+ name +"password: "+ "email: "+email);
+            User attributes = session.getBy(user.getClass(),"name",user);
+           if(attributes == null) {
+               session.save(user);
+               logger.info("name: " + name + "password: " + "email: " + email);
+           }
         }
         catch (Exception e)
         {
@@ -80,16 +83,27 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
-    public void deleteUser(String name, String password, String email) {
-        User u = users.get(name);
-        if (u==null) {
-            logger.warn("not found " + u);
-        }
-        else if(users.get(name).getPassword().equals(password) && users.get(name).getMail().equals(email)){
+    public void deleteUser(String name) {
+        try {
+            session = FactorySession.openSession();
+            String atribute = "password";
+            User finder = new User(name,null,null);
+            User u = session.getBy(User.class,"name",finder);
+            if (u == null) {
+                logger.warn("not found " + u);
+            } else session.delete(u.getClass(), atribute, u);
             logger.info(u + " deleted ");
-        }
 
-        this.users.remove(u);
+
+            this.users.remove(u);
+        }
+        catch (Exception e)
+        {
+            logger.info("Error al borrar usuario");
+        }
+        finally {
+            session.close();
+        }
     }
 
     @Override
@@ -111,15 +125,28 @@ public class ServerGameManagerImpl implements ServerGameManager {
 
     @Override
     public User getUser(String name) {
+        try {
+            session = FactorySession.openSession();
+            User u = new User(name,null,null);
+            User attributes = session.getBy(User.class, "name", u);
+            if (attributes != null) {
+                logger.info(name + " found");
+                return attributes;
 
-        if(users.containsKey(name)){
-            logger.info(name+" found");
-            return users.get(name);
-        }
-        else {
-            logger.info(name + " not found");
-            return null;
+            } else {
+                logger.info(name + " not found");
+                return null;
             }
+        }
+        catch (Exception e)
+        {
+            logger.info("Error al visualizar un usuario");
+        }
+        finally {
+            session.close();
+        }
+        return null;
+
     }
     @Override
     public Items addItem(Items items) {

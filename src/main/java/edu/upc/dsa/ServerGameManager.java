@@ -3,6 +3,7 @@ package edu.upc.dsa;
 import edu.upc.dsa.models.Items;
 import edu.upc.dsa.models.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface ServerGameManager {
@@ -13,7 +14,7 @@ public interface ServerGameManager {
     public void loginUser(String name, String password);
     public List<User> getUserList();
     public User getUser(String name);
-    public void deleteUser(String name, String password, String email);
+    public void deleteUser(String name);
     public void logOutUser(String name);
     public Items addItem (Items items);
     public Items addItem (String name, String desription);

@@ -14,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
 
 @Api(value = "/GameServer", description = "Endpoint to GameServer Service")
@@ -139,11 +140,11 @@ public class GameServerService {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/deleteUser/{name}/{password}/{email}")
-    public Response deleteUser(@PathParam("name") String name,@PathParam("password")String password,@PathParam("email") String email) {
+    @Path("/deleteUser/{name}")
+    public Response deleteUser(@PathParam("name") String name) {
 
         if (gsm.getUser(name)==null) return Response.status(404).build();
-        else gsm.deleteUser(name,password,email);
+        else gsm.deleteUser(name);
         return Response.status(201).build();
     }
 

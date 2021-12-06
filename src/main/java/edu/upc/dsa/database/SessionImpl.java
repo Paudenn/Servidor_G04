@@ -3,10 +3,12 @@ package edu.upc.dsa.database;
 import edu.upc.dsa.ServerGameManagerImpl;
 import edu.upc.dsa.database.util.ObjectHelper;
 import edu.upc.dsa.database.util.QueryHelper;
+import edu.upc.dsa.models.User;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.UnknownServiceException;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
@@ -65,47 +67,6 @@ public class SessionImpl implements Session {
         }
     }
 
-    public Object get(Object o, int ID) {
-        /*Class theClass = o.getClass();
-        String selectQuery = QueryHelper.createQuerySELECT(o);
-        log.info(selectQuery);
-
-        Object entity = null;
-
-        PreparedStatement pstm = null;
-        ResultSet result = null;
-
-        try{
-            pstm = conn.prepareStatement(selectQuery);
-            pstm.setObject(1, ID);
-            log.info("Anem a executar la Query.");
-            result = pstm.executeQuery();
-            log.info("Query executada satisfactoriament.");
-
-            while (result.next()){
-                Field[] fields = theClass.getDeclaredFields();
-                result.getString(1);
-                for(int i = 0; i < fields.length; i ++){
-                    ResultSetMetaData rsmd = result.getMetaData();
-                    String name = rsmd.getColumnName(i+2);
-                    log.info("The column name is: "+ name);
-                    ObjectHelper.setter(o,name, result.getObject(i+2));
-                }
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-        return o;
-
-         */
-        return  null;
-    }
-
-
     public int update(Object entity) {
 
         PreparedStatement preparedStatement = null;
@@ -160,29 +121,74 @@ public class SessionImpl implements Session {
         return 0;
     }
 
-    public int delete(Class theClass, int id, String attribute, Object value) {
+    public int delete(Class theClass, String attribute, Object entity) {
 
         PreparedStatement preparedStatement = null;
         String query = QueryHelper.createQueryDELETEWithCondition(theClass, attribute);
 
+        try {
+            preparedStatement = conn.prepareStatement(query);
+
+            for (String field : ObjectHelper.getFields(entity)) {
+                if (field.equals("name")) {
+                    java.lang.Object object = ObjectHelper.getValue(entity, field);
+                    preparedStatement.setObject(1, object);
+
+                } else if (field.equals(attribute)) {
+                    java.lang.Object object = ObjectHelper.getValue(entity, field);
+                    preparedStatement.setObject(2, object);
+                }
+            }
+            preparedStatement.executeQuery();
+        }
+        catch(SQLException e){
+                e.printStackTrace();
+                return -2;
+            }
+
+            return 0;
+        }
+
+
+    public User getBy(Class theClass, String attr, Object value) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQuerySELECT(theClass, attr);
+        User attributes = new User();
+
         try
         {
             preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            preparedStatement.setObject(2, value);
+            for (String field : ObjectHelper.getFields(value)) {
+                if (field.equals("name")) {
+                    java.lang.Object object = ObjectHelper.getValue(value, field);
+                    preparedStatement.setObject(1, object);
+                    attributes.setName(object.toString());
+                }
 
-            preparedStatement.executeQuery();
-        }
-        catch (SQLException e) {
+            }
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.first()) {
+                ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                attributes.setPassword(resultSet.getObject(2).toString());
+                attributes.setMail(resultSet.getObject(3).toString());
+
+                for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
+
+                    //attributes.add(resultSetMetaData.getColumnName(1), resultSet.getObject(i + 1));
+                }
+            }
+            else
+                return null;
+
+        } catch (SQLException e) {
             e.printStackTrace();
-            return -2;
         }
-
-        return 0;
+        return attributes;
     }
-
-    public HashMap getBy(Class theClass, String attr, Object value) {
-
+    public HashMap get(Class theClass, String attr, String value) {
         PreparedStatement preparedStatement = null;
         String query = QueryHelper.createQuerySELECT(theClass, attr);
         HashMap<String, java.lang.Object> attributes = new HashMap<>();;
@@ -190,7 +196,13 @@ public class SessionImpl implements Session {
         try
         {
             preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setObject(1, value);
+            for (String field : ObjectHelper.getFields(value)) {
+                if (field.equals("name")) {
+                    java.lang.Object object = ObjectHelper.getValue(value, field);
+                    preparedStatement.setObject(1, object);
+
+                }
+            }
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -207,9 +219,7 @@ public class SessionImpl implements Session {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return attributes;
-
 
     }
 
