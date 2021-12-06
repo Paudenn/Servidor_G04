@@ -11,10 +11,11 @@ public interface Session<E> {
     void close();
     HashMap get(Class theClass, String attr, String value);
     int update(Object object);
-    int update(Class theClass, int id, String attribute, Object value);
+    int update(Class theClass,String name,String attribute, Object value);
     int delete(Class theClass, String attribute, Object value);
     User getBy(Class theClass, String attr, Object value);
     Items getItems (Class theClass, String attr, Object value);
+
 
 
     List<Object> findAll(Class theClass);

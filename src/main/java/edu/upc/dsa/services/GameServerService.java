@@ -185,23 +185,20 @@ public class GameServerService {
         else gsm.logOutUser(name);
         return Response.status(201).build();
     }
-    /* @PUT
-    @ApiOperation(value = "update a Track", notes = "asdasd")
+    @PUT
+    @ApiOperation(value = "update a User HighScore", notes = "asdasd")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful"),
-            @ApiResponse(code = 404, message = "Track not found")
+            @ApiResponse(code = 404, message = "User not found")
     })
     @Path("/")
-    public Response updateTrack(Track track) {
+    public Response updateScore(User user) {
 
-        Track t = this.gsm.updateTrack(track);
-
-        if (t == null) return Response.status(404).build();
-
+        this.gsm.updateScore(user.getName(),"highScore",user.getHighScore());
         return Response.status(201).build();
     }
 
-     */
+
 
 
 

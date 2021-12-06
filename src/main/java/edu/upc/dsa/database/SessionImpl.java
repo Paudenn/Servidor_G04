@@ -101,7 +101,7 @@ public class SessionImpl implements Session {
         return -1;
     }
 
-    public int update(Class theClass, int id, String attribute, Object value) {
+    public int update(Class theClass,String name, String attribute, Object value) {
 
         PreparedStatement preparedStatement = null;
         String query = QueryHelper.createQueryUPDATEAttribute(theClass, attribute);
@@ -109,8 +109,9 @@ public class SessionImpl implements Session {
 
         try {
             preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setObject(1, value);
-            preparedStatement.setInt(2, id);
+
+            preparedStatement.setString(2, name );
+            preparedStatement.setInt(1, (int)value);
 
             preparedStatement.executeQuery();
 

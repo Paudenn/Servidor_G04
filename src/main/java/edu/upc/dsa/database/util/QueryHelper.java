@@ -46,7 +46,7 @@ public class QueryHelper {
 
         for(String f : fields)
         {
-            if(!f.equals("id"))
+            if(!f.equals("name"))
                 query = query + f + "=?, ";
         }
 
@@ -61,7 +61,7 @@ public class QueryHelper {
     public static String createQueryUPDATEAttribute(Class theClass, String attribute)
     {
         String query = "UPDATE " + theClass.getSimpleName() + " SET ";
-        query = query + attribute + "=? WHERE id=?;";
+        query = query + attribute + "=? WHERE name=?;";
 
         return query;
     }

@@ -16,9 +16,11 @@ public interface ServerGameManager {
     public User getUser(String name);
     public void deleteUser(String name);
     public void logOutUser(String name);
+    public void updateScore (String name,String attribute,Object value);
+
+
     public Items addItem (Items items);
     public Items addItem (String name, String desription);
-
     public void deleteItems (String name);
     public List<Items> getItemList();
     public Items getItem(String name);

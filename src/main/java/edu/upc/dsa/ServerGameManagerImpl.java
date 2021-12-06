@@ -117,6 +117,33 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
+    public void updateScore(String name, String attribute, Object value) {
+        try {
+            session = FactorySession.openSession();
+            User u = new User(name, null, null);
+            User attributes = session.getBy(User.class, "name", u);
+            if (attributes != null) {
+
+                session.update(User.class,name,attribute,value);
+
+            }
+            else {
+                logger.info(name + " not found");
+
+            }
+        }
+            catch (Exception e)
+            {
+                logger.info("Error al visualizar un usuario");
+            }
+        finally {
+                session.close();
+            }
+
+
+    }
+
+    @Override
     public List<User> getUserList() {
         logger.info("List of all registered users");
         List<User> userList = Arrays.asList(users.values().stream().toArray(User[]::new));
