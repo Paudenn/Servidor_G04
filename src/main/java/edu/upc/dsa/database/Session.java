@@ -12,11 +12,13 @@ public interface Session<E> {
     HashMap get(Class theClass, String attr, String value);
     int update(Object object);
     int update(Class theClass,String name,String attribute, Object value);
+    int saveItem(Class theClass,int id_u,String attribute,Object id, Object valueclass);
     int delete(Class theClass, String attribute, Object value);
     User getBy(Class theClass, String attr, Object value);
     Items getItems (Class theClass, String attr, Object value);
 
-
+    List<HashMap<String, Object>> getAllBy(Class theClass, String attr, Object value);
+    List<HashMap<String, Object>> getAll(Class theClass);
 
     List<Object> findAll(Class theClass);
     List<Object> findAll(Class theClass, HashMap params);

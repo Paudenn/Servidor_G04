@@ -6,6 +6,7 @@ import edu.upc.dsa.database.FactorySession;
 import edu.upc.dsa.database.Session;
 import edu.upc.dsa.models.User;
 import edu.upc.dsa.models.Items;
+import edu.upc.dsa.models.UserInventory;
 import org.apache.log4j.Logger;
 
 
@@ -83,12 +84,12 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
-    public void deleteUser(String name) {
+    public void deleteUser(int id) {
         try {
             session = FactorySession.openSession();
             String atribute = "password";
-            User finder = new User(name,null,null);
-            User u = session.getBy(User.class,"name",finder);
+            User finder = new User(null,null,null,id);
+            User u = session.getBy(User.class,"id",finder);
             if (u == null) {
                 logger.warn("not found " + u);
             } else session.delete(u.getClass(), atribute, u);
@@ -107,8 +108,8 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
-    public void logOutUser(String name) {
-        if (users.containsKey(name))
+    public void logOutUser(int id) {
+        if (users.containsKey(id))
         {
             //users.get(name).setActive(false);
         }
@@ -145,23 +146,47 @@ public class ServerGameManagerImpl implements ServerGameManager {
 
     @Override
     public List<User> getUserList() {
+        List<User> userList = new ArrayList<>();
+
+        try {
+            session = FactorySession.openSession();
+            List<HashMap<String, java.lang.Object>> list = session.getAll(User.class);
+            if(list != null) {
+                for (HashMap<String, java.lang.Object> h : list) {
+                    userList.add(new User(
+                            (String) h.get("name"),
+                            (String) h.get("password"),
+                            (String) h.get("mail"),
+                            (int) h.get("ID")
+                    ));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        finally {
+            session.close();
+        }
         logger.info("List of all registered users");
-        List<User> userList = Arrays.asList(users.values().stream().toArray(User[]::new));
+         // = Arrays.asList(users.values().stream().toArray(User[]::new));
         return userList;
     }
 
     @Override
-    public User getUser(String name) {
+    public User getUser(int id) {
         try {
             session = FactorySession.openSession();
-            User u = new User(name,null,null);
-            User attributes = session.getBy(User.class, "name", u);
+            User u = new User(null,null,null,id);
+            User attributes = session.getBy(User.class, "id", u);
             if (attributes != null) {
-                logger.info(name + " found");
+                logger.info(attributes.getName() + " found");
                 return attributes;
 
             } else {
-                logger.info(name + " not found");
+                logger.info("User not found");
                 return null;
             }
         }
@@ -174,6 +199,41 @@ public class ServerGameManagerImpl implements ServerGameManager {
         }
         return null;
 
+    }
+
+    public User addToInventory (int id_u, int id_i)
+    {
+        User u = null;
+        try {
+            session = FactorySession.openSession();
+            User us = new User(null,null,null,id_u);
+            User attributes = session.getBy(User.class,"id",us);
+            if (attributes != null) {
+                UserInventory uI = new UserInventory(id_u,id_i);
+                int err = session.saveItem(UserInventory.class, id_u, "id_i", id_i,uI);
+                if (err == -1)
+                {
+                    logger.info("Item no encontrado");
+                    return null;
+                }
+                else {
+                    logger.info("Objecto anadido de forma correcta");
+                    u = attributes;
+                }
+            }
+            else {
+                logger.info("Usuario no encontrado");
+                return null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+
+        return u;
     }
     @Override
     public Items addItem(Items items) {
@@ -255,7 +315,31 @@ public class ServerGameManagerImpl implements ServerGameManager {
 
     @Override
     public List<Items> getItemList() {
-        return this.items;
+        List<Items> itemsList = new ArrayList<>();
+
+        try {
+            session = FactorySession.openSession();
+            List<HashMap<String, java.lang.Object>> list = session.getAll(Items.class);
+            if(list != null) {
+                for (HashMap<String, java.lang.Object> h : list) {
+                    itemsList.add(new Items(
+                            (String) h.get("name"),
+                            (String) h.get("description")
+                    ));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        finally {
+            session.close();
+        }
+        logger.info("List of all registered users");
+        // = Arrays.asList(users.values().stream().toArray(User[]::new));
+        return itemsList;
     }
 
     public static void delete(){

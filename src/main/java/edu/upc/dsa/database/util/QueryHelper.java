@@ -38,6 +38,10 @@ public class QueryHelper {
 
         return query;
     }
+    public static String createQuerySELECTAll(Class theClass)
+    {
+        return "SELECT * FROM " + theClass.getSimpleName() + ";";
+    }
 
     public static String createQueryUPDATE(Object object)
     {
@@ -62,6 +66,28 @@ public class QueryHelper {
     {
         String query = "UPDATE " + theClass.getSimpleName() + " SET ";
         query = query + attribute + "=? WHERE name=?;";
+
+        return query;
+    }
+    public static String createQueryINSERTItems(Class theClass, Object valueclass)
+    {
+        String query = "INSERT INTO " + theClass.getSimpleName() + " (";
+
+        String[] fields = ObjectHelper.getFields(valueclass);
+
+        query = query + fields[0];
+
+        for(int i = 1; i < fields.length; i++)
+            query = query + "," + fields[i];
+
+
+        query = query + ") VALUES (?";
+
+        for(int i = 0; i < fields.length - 1; i++)
+            query = query + ",?";
+
+        query = query + ");";
+
 
         return query;
     }

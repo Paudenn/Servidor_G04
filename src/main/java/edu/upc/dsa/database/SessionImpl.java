@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.UnknownServiceException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,8 +37,14 @@ public class SessionImpl implements Session {
             int i = 1;
 
             for (String field: ObjectHelper.getFields(entity)) {
-                if(field.equals("id")){
-                    pstm.setNull(1,Types.NULL);
+                if(field.equals("id_i")){
+                    pstm.setNull(i,Types.NULL);
+                    i++;
+
+                }
+                else if (field.equals("id")){
+                    pstm.setNull(i,Types.NULL);
+                    i++;
 
                 }
                 else {
@@ -123,6 +130,37 @@ public class SessionImpl implements Session {
         return 0;
     }
 
+    @Override
+    public int saveItem(Class theClass, int id_u, String attribute,Object id,Object valueclass) {
+        String insertQuery = QueryHelper.createQueryINSERTItems(theClass,valueclass);
+        log.info(insertQuery);
+
+        PreparedStatement pstm = null;
+
+        try {
+            pstm = conn.prepareStatement(insertQuery);
+            int i = 1;
+
+            for (String field: ObjectHelper.getFields(valueclass)) {
+
+                    java.lang.Object object = ObjectHelper.getValue(valueclass, field);
+                    pstm.setObject(i,object);
+                    i++;
+
+            }
+            log.info(pstm.toString());
+            pstm.executeQuery();
+
+
+        } catch (SQLIntegrityConstraintViolationException e)
+        {
+            return -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public int delete(Class theClass, String attribute, Object entity) {
 
         PreparedStatement preparedStatement = null;
@@ -161,17 +199,19 @@ public class SessionImpl implements Session {
         {
             preparedStatement = conn.prepareStatement(query);
             for (String field : ObjectHelper.getFields(value)) {
-                if (field.equals("name")) {
+                if (field.equals(attr)) {
                     java.lang.Object object = ObjectHelper.getValue(value, field);
                     preparedStatement.setObject(1, object);
-                    attributes.setName(object.toString());
                 }
+
             }
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.first()) {
                 ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                attributes.setName(resultSet.getObject(1).toString());
                 attributes.setPassword(resultSet.getObject(2).toString());
                 attributes.setMail(resultSet.getObject(3).toString());
+                attributes.setId((int)resultSet.getObject(4));
 
                 for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
 
@@ -214,6 +254,85 @@ public class SessionImpl implements Session {
         }
         return attributes;
     }
+
+    @Override
+    public List<HashMap<String, Object>> getAllBy(Class theClass, String attr, Object value) {
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQuerySELECT(theClass, attr);
+        List<HashMap<String, java.lang.Object>> list = new ArrayList<>();
+
+        try
+        {
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setObject(1, value);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next())
+            {
+                ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                HashMap<String, java.lang.Object> attributes = new HashMap<>();
+                for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
+                    attributes.put(resultSetMetaData.getColumnName(i + 1), resultSet.getObject(i + 1));
+                }
+                list.add(attributes);
+            }
+
+            if(!resultSet.first())
+                return null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<HashMap<String, Object>> getAll(Class theClass) {
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQuerySELECTAll(theClass);
+        List<HashMap<String, java.lang.Object>> list = new ArrayList<>();
+
+        try
+        {
+            preparedStatement = conn.prepareStatement(query);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next())
+            {
+                ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                HashMap<String, java.lang.Object> attributes = new HashMap<>();
+                for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
+                    attributes.put(resultSetMetaData.getColumnName(i + 1), resultSet.getObject(i + 1));
+                }
+                list.add(attributes);
+            }
+
+            if(!resultSet.first())
+                return null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        return list;
+
+    }
+
     public HashMap get(Class theClass, String attr, String value) {
         PreparedStatement preparedStatement = null;
         String query = QueryHelper.createQuerySELECT(theClass, attr);

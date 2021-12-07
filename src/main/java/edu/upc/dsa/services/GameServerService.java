@@ -122,10 +122,10 @@ public class GameServerService {
             @ApiResponse(code = 201, message = "Successful", response = User.class),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/userInfo/{name}")
+    @Path("/userInfo/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("name") String name) {
-        User user = this.gsm.getUser(name);
+    public Response getUser(@PathParam("id") int id) {
+        User user = this.gsm.getUser(id);
         if (user == null) return Response.status(404).build();
         else  return Response.status(201).entity(user).build();
     }
@@ -149,11 +149,12 @@ public class GameServerService {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/deleteUser/{name}")
-    public Response deleteUser(@PathParam("name") String name) {
+    @Path("/deleteUser/{id}")
+    public Response deleteUser(@PathParam("id") int id) {
 
-        if (gsm.getUser(name)==null) return Response.status(404).build();
-        else gsm.deleteUser(name);
+        if (gsm.getUser(id)==null)
+            return Response.status(404).build();
+        else gsm.deleteUser(id);
         return Response.status(201).build();
     }
 
@@ -178,11 +179,11 @@ public class GameServerService {
             @ApiResponse(code = 201, message = "OK"),
             @ApiResponse(code = 404, message = "Not found (user not found)")
     })
-    @Path("/logout/{name}")
+    @Path("/logout/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response logoutUser(@PathParam("name") String name) {
-        if (gsm.getUser(name)== null) return Response.status(404).build();
-        else gsm.logOutUser(name);
+    public Response logoutUser(@PathParam("id") int id) {
+        if (gsm.getUser(id)== null) return Response.status(404).build();
+        else gsm.logOutUser(id);
         return Response.status(201).build();
     }
     @PUT
@@ -191,11 +192,30 @@ public class GameServerService {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/")
+    @Path("/updatePlayerScore")
     public Response updateScore(User user) {
 
         this.gsm.updateScore(user.getName(),"highScore",user.getHighScore());
         return Response.status(201).build();
+    }
+    @POST
+    @ApiOperation(value = "add item to invetory by userId", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response= UserInventory.class),
+            @ApiResponse(code = 500, message = "Validation Error")
+
+    })
+
+    @Path("/addToinventory/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addToInventory(UserInventory userinv) {
+
+        if (userinv.getId_u()==0 || userinv.getId_i()==0)  return Response.status(500).entity(userinv).build();
+        User err = this.gsm.addToInventory(userinv.getId_u(),userinv.getId_i());
+        if (err == null)
+            return Response.status(404).build();
+        else
+        return Response.status(201).entity(userinv).build();
     }
 
 

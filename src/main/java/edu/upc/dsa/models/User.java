@@ -7,6 +7,8 @@ public class User {
     private String mail;
     //private Boolean active;
     private int highScore;
+    private int id;
+
 
     public User(){}
 
@@ -16,6 +18,15 @@ public class User {
         this.mail = mail;
         //this.active = false;
         this.highScore = 0;
+
+    }
+    public User(String name, String password, String mail, int id) {
+        this.name = name;
+        this.password = password;
+        this.mail = mail;
+        //this.active = false;
+        this.highScore = 0;
+        this.id = id;
 
     }
 
@@ -40,4 +51,12 @@ public class User {
     public int getHighScore() {return highScore;}
 
     public void setHighScore(int highScore) {this.highScore = highScore;}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
