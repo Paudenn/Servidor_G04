@@ -1,4 +1,4 @@
-package edu.upc.dsa.models;
+package edu.upc.dsa.models.AUXmodels;
 
 public class UserAUX {
 

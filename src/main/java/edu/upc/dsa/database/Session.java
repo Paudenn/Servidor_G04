@@ -14,6 +14,8 @@ public interface Session<E> {
     int update(Class theClass,String name,String attribute, Object value);
     int saveItem(Class theClass,int id_u,String attribute,Object id, Object valueclass);
     int delete(Class theClass, String attribute, Object value);
+    int deleteInventory(Class theClass, String attribute, Object value);
+    int deleteInventoryItems(Class theClass, String attribute, Object value);
     User getBy(Class theClass, String attr, Object value);
     Items getItems (Class theClass, String attr, Object value);
 

@@ -68,19 +68,40 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
-    public void loginUser(String name, String password) {
+    public int loginUser(String name, String password) {
 
-        if(users.containsKey(name))
-        {
-            if(users.get(name).getPassword().equals(password))
-            {
+        try {
+            session = FactorySession.openSession();
+            User u = new User(name, password, null);
+            User nameCheck = session.getBy(User.class, "name", u);
+            User passwordCheck = session.getBy(User.class, "password", u);
+            if (nameCheck != null & passwordCheck != null) {
                 logger.info("Login successful!");
-               // users.get(name).setActive(true);
+                return 0;
             }
-            else logger.info("Wrong Password");
+            else if (nameCheck == null & passwordCheck != null)
+            {
+                logger.info("Nombre de usuario incorrecto");
+                return -1;
+            }
+            else if (passwordCheck == null & nameCheck != null)
+            {
+                logger.info("Password incorrecto");
+                return -1;
+            }
+            else {
+                logger.info("Error al inserar usuario");
+                return -1;
+            }
         }
-        else logger.info("This username does not exist");
-
+        catch (Exception e)
+        {
+            logger.info("Error al encontrar usuario");
+        }
+        finally {
+            session.close();
+        }
+        return -1;
     }
 
     @Override
@@ -92,11 +113,12 @@ public class ServerGameManagerImpl implements ServerGameManager {
             User u = session.getBy(User.class,"id",finder);
             if (u == null) {
                 logger.warn("not found " + u);
-            } else session.delete(u.getClass(), atribute, u);
-            logger.info(u + " deleted ");
+            } else {
+                    session.deleteInventory(UserInventory.class,"id",u);
 
-
-            this.users.remove(u);
+                    session.delete(u.getClass(), atribute, u);
+                    logger.info(u + " deleted ");
+            }
         }
         catch (Exception e)
         {
@@ -235,6 +257,43 @@ public class ServerGameManagerImpl implements ServerGameManager {
 
         return u;
     }
+
+    @Override
+    public List<Items> getUserItemList(int id) {
+        List<Items> itemsList = new ArrayList<>();
+        try {
+            session = FactorySession.openSession();
+            User us = new User(null, null, null, id);
+            User attributes = session.getBy(User.class, "id", us);
+            if (attributes != null) {
+                List<HashMap<String, java.lang.Object>> list = session.getAllBy(UserInventory.class,"id_u",id);
+                if (list != null) {
+                    for (HashMap<String, java.lang.Object> i : list) {
+                        Items finder = new Items(null,null,(int)i.get("id_i"));
+                        Items items = session.getItems(Items.class, "id", finder);
+                        if (items != null) {
+                            itemsList.add(new Items(
+                                    items.getName(),
+                                    items.getDescription(),
+                                    items.getId()
+                            ));
+                        }
+                    }
+                }else {
+                    logger.info("Usuario no encontrado");
+                    return null;
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+
+        return itemsList;
+    }
+
     @Override
     public Items addItem(Items items) {
 
@@ -267,16 +326,17 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
-    public void deleteItems(String name) {
+    public void deleteItems(int id) {
         try {
             session = FactorySession.openSession();
-            Items it = new Items(name, null);
-            Items attributes = session.getItems(it.getClass(), "name", it);
+            Items it = new Items(null, null, id);
+            Items attributes = session.getItems(it.getClass(), "id", it);
             if (attributes != null) {
+                session.deleteInventoryItems(UserInventory.class,"id",it);
                 session.delete(it.getClass(),"description",attributes);
             }
-            if (name == null) {
-                logger.warn("not found " + name);
+            if (id == 0) {
+                logger.warn("not found ");
             } else logger.info(items + " deleted ");
 
             this.items.remove(items);
@@ -289,12 +349,12 @@ public class ServerGameManagerImpl implements ServerGameManager {
             session.close();
         }
     }
-    public Items getItem(String name) {
-        logger.info("getObject("+name+")");
+    public Items getItem(int id) {
+        logger.info("getObject("+id+")");
         try {
             session = FactorySession.openSession();
-            Items it = new Items(name, null);
-            Items attributes = session.getItems(it.getClass(), "name", it);
+            Items it = new Items(null, null,id);
+            Items attributes = session.getItems(it.getClass(), "id", it);
             if (attributes != null) {
                 logger.info("Item: " + attributes);
                 return attributes;
@@ -324,7 +384,8 @@ public class ServerGameManagerImpl implements ServerGameManager {
                 for (HashMap<String, java.lang.Object> h : list) {
                     itemsList.add(new Items(
                             (String) h.get("name"),
-                            (String) h.get("description")
+                            (String) h.get("description"),
+                            (int) h.get("ID")
                     ));
                 }
             }
@@ -362,25 +423,5 @@ public class ServerGameManagerImpl implements ServerGameManager {
         return ret;
     }
 
-    /*
-    @Override
-    public Track updateTrack(Track p) {
-        Track t = this.getTrack(p.getId());
 
-        if (t!=null) {
-            logger.info(p+" rebut!!!! ");
-
-            t.setSinger(p.getSinger());
-            t.setTitle(p.getTitle());
-
-            logger.info(t+" updated ");
-        }
-        else {
-            logger.warn("not found "+p);
-        }
-
-        return t;
-    }
-
-     */
 }

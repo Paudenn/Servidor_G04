@@ -92,10 +92,17 @@ public class QueryHelper {
         return query;
     }
 
-    public static String createQueryDELETE(Class theClass)
+    public static String createQueryDELETEInventory(Class theClass)
     {
         String query = "DELETE FROM " + theClass.getSimpleName() +
-                "WHERE id=?;";
+                " WHERE id_u=?;";
+
+        return query;
+    }
+    public static String createQueryDELETEInventoryItem(Class theClass)
+    {
+        String query = "DELETE FROM " + theClass.getSimpleName() +
+                " WHERE id_i=?;";
 
         return query;
     }

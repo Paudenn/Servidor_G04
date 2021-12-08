@@ -4,6 +4,9 @@ package edu.upc.dsa.services;
 import edu.upc.dsa.ServerGameManager;
 import edu.upc.dsa.ServerGameManagerImpl;
 import edu.upc.dsa.models.*;
+import edu.upc.dsa.models.AUXmodels.ItemsAUX;
+import edu.upc.dsa.models.AUXmodels.LoginAUX;
+import edu.upc.dsa.models.AUXmodels.UserAUX;
 import edu.upc.dsa.models.Items;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +17,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import java.util.List;
 
 @Api(value = "/GameServer", description = "Endpoint to GameServer Service")
@@ -37,7 +39,7 @@ public class GameServerService {
     @POST
     @ApiOperation(value = "Register a user", notes = "asdasd")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response=UserAUX.class),
+            @ApiResponse(code = 201, message = "Successful", response= UserAUX.class),
             @ApiResponse(code = 500, message = "Validation Error")
 
     })
@@ -53,14 +55,14 @@ public class GameServerService {
     @POST
     @ApiOperation(value = "create a new Item", notes = "asdasd")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response= Items.class),
+            @ApiResponse(code = 201, message = "Successful", response= ItemsAUX.class),
             @ApiResponse(code = 500, message = "Validation Error")
 
     })
 
     @Path("/addItems/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addItem(Items items) {
+    public Response addItem(ItemsAUX items) {
 
         if (items.getName()==null || items.getDescription()==null)  return Response.status(500).entity(items).build();
         this.gsm.addItem(items.getName(), items.getDescription());
@@ -97,25 +99,21 @@ public class GameServerService {
         return Response.status(201).entity(entity).build()  ;
 
     }
-/*
     @GET
-    @ApiOperation(value = "get all Track", notes = "asdasd")
+    @ApiOperation(value = "get all Items by user", notes = "asdasd")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Track.class, responseContainer="List"),
+            @ApiResponse(code = 201, message = "Successful", response = Items.class, responseContainer="List"),
     })
-    @Path("/")
+    @Path("/userItemList/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTracks() {
+    public Response getUserItemList(@PathParam("id") int id) {
 
-        List<Track> tracks = this.gsm.findAll();
+        List<Items> items = this.gsm.getUserItemList(id);
 
-        GenericEntity<List<Track>> entity = new GenericEntity<List<Track>>(tracks) {};
+        GenericEntity<List<Items>> entity = new GenericEntity<List<Items>>(items) {};
         return Response.status(201).entity(entity).build()  ;
 
     }
-
-    */
-
     @GET
     @ApiOperation(value = "get User info", notes = "asdasd")
     @ApiResponses(value = {
@@ -136,11 +134,11 @@ public class GameServerService {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/deleteItem/{name}")
-    public Response deleteItems(@PathParam("name") String name) {
+    @Path("/deleteItem/{id}")
+    public Response deleteItems(@PathParam("id") int id) {
 
-        if (gsm.getItem(name)==null) return Response.status(404).build();
-        else gsm.deleteItems(name);
+        if (gsm.getItem(id)==null) return Response.status(404).build();
+        else gsm.deleteItems(id);
         return Response.status(201).build();
     }
     @DELETE
@@ -169,8 +167,10 @@ public class GameServerService {
     @Path("/login/")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response loginUser(LoginAUX login) {
-        gsm.loginUser(login.getName(),login.getPassword());
+        int res = gsm.loginUser(login.getName(),login.getPassword());
         if (login.getName()==null || login.getPassword()==null)  return Response.status(404).build();
+        else if (res != 0) return Response.status(404).build();
+        else
         return Response.status(201).entity(login).build();
     }
     @GET

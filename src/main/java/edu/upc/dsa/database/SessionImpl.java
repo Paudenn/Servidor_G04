@@ -188,6 +188,52 @@ public class SessionImpl implements Session {
 
             return 0;
         }
+    public int deleteInventory(Class theClass, String attribute, Object entity) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQueryDELETEInventory(theClass);
+
+        try {
+            preparedStatement = conn.prepareStatement(query);
+
+            for (String field : ObjectHelper.getFields(entity)) {
+                if (field.equals(attribute)) {
+                    java.lang.Object object = ObjectHelper.getValue(entity, field);
+                    preparedStatement.setObject(1, object);
+                }
+            }
+            preparedStatement.executeQuery();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return -2;
+        }
+
+        return 0;
+    }
+    public int deleteInventoryItems(Class theClass, String attribute, Object entity) {
+
+        PreparedStatement preparedStatement = null;
+        String query = QueryHelper.createQueryDELETEInventoryItem(theClass);
+
+        try {
+            preparedStatement = conn.prepareStatement(query);
+
+            for (String field : ObjectHelper.getFields(entity)) {
+                if (field.equals(attribute)) {
+                    java.lang.Object object = ObjectHelper.getValue(entity, field);
+                    preparedStatement.setObject(1, object);
+                }
+            }
+            preparedStatement.executeQuery();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return -2;
+        }
+
+        return 0;
+    }
 
 
     public User getBy(Class theClass, String attr, Object value) {
@@ -235,16 +281,17 @@ public class SessionImpl implements Session {
         {
             preparedStatement = conn.prepareStatement(query);
             for (String field : ObjectHelper.getFields(value)) {
-                if (field.equals("name")) {
+                if (field.equals(attr)) {
                     java.lang.Object object = ObjectHelper.getValue(value, field);
                     preparedStatement.setObject(1, object);
-                    attributes.setName(object.toString());
                 }
             }
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.first()) {
                 ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                attributes.setName(resultSet.getObject(1).toString());
                 attributes.setDescription(resultSet.getObject(2).toString());
+                attributes.setId((int)resultSet.getObject(3));
             }
             else
                 return null;
