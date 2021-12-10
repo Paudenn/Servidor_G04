@@ -1,158 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>G04_GameLogin</title>
+  <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <meta name="robots" content="noindex, follow">
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="js/main.js"></script>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v64f9daad31f64f81be21cbef6184a5e31634941392597" integrity="sha512-gV/bogrUTVP2N3IzTDKzgP0Js1gg4fbwtYB6ftgLbKQu/V8yH2+lrKCfKHelh4SO3DPzKj4/glTO+tNJGDnb0A==" data-cf-beacon='{"rayId":"6bad9700e9546665","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.11.0","si":100}' crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
 
   <script>
-    $(document).ready(function(){
-      $(function() {
-        $('#login-form-link').click(function(e) {
-            $("#login-form").delay(100).fadeIn(100);
-            $("#register-form").fadeOut(100);
-            $('#register-form-link').removeClass('active');
-            $(this).addClass('active');
-            e.preventDefault();
-        });
-        $('#register-form-link').click(function(e) {
-            $("#register-form").delay(100).fadeIn(100);
-            $("#login-form").fadeOut(100);
-            $('#login-form-link').removeClass('active');
-            $(this).addClass('active');
-            e.preventDefault();
-        });
-      });
+           $(document).ready(function(){
+            $(".form-submit").click(function(){
 
-
-      $(".btn-submit").click(function(){
-        var auth = $(this).attr("id");
-        var url = "http://localhost:8080/dsaApp/auth/" + auth;
-        var CompleteCredentials = {};
-
-        var selector = "." + auth + "-credential";
-        $(selector).each(function(index, element){
-          var name = $(element).attr("name");
-          CompleteCredentials[name] = $(element).val();
+                var user,psw,mail;
+                $.ajax({
+                    beforeSend: function (){
+                        user = $("#name").val();
+                        psw = $("#password").val();
+                        mail = $("#email").val()
+                    },
+                    url: 'http://localhost:8080/dsaApp/GameServer/login',
+                    type: 'POST',
+                    data: {name:user,password:psw,email:mail},
+                    dataType: 'json',
+                    success: function (json){
+                    },
+                    error: function (xhr, status,error){
+                        console.log(status)
+                        console.log(error)
+                    },
+                    complete: function (xhr, status){
+                        console.log(status)
+                    },
+                    timeout : 10000
+                })
+            });
         });
 
-        $.ajax(url, {
-          data : JSON.stringify(CompleteCredentials),
-          contentType : 'application/json',
-          type : 'POST',
-          complete: function(jqXHR, textStatus)
-          {
-            if(auth === "signup")
-            {
-              if(jqXHR.status == 200)
-              {
-                $("#signup-error").text("");
-                alert("Sign up successful!");
-              }
-              else if(jqXHR.status == 404)
-                $("#signup-error").text("Error: Username already exists");
-              else
-                alert("Unexpected error.");
-            }
-            else if(auth === "login")
-            {
-              if(jqXHR.status == 200)
-              {
-                $("#login-error").text("");
-                alert("Log In successful!");
-              }
-              else if(jqXHR.status == 404 || jqXHR.status == 409)
-                $("#login-error").text("Error: Incorrect username or password");
-              else
-                alert("Unexpected error.");
-            }
-          }
-        });
-      });
-    });
-  </script>
-
-  <title>Form</title>
-
+</script>
 </head>
 <body>
+<div class="register-form">
+  <section class="signup">
 
-<div id="fullscreen_bg" class="fullscreen_bg"/>
-<div id="regContainer" class="container">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <div class="panel panel-login">
-        <div class="panel-heading">
-          <div class="row">
-            <div class="col-xs-6">
-              <a href="#" class="active" id="login-form-link">Login</a>
-            </div>
-            <div class="col-xs-6">
-              <a href="#" id="register-form-link">Register</a>
-            </div>
+    <div class="container">
+      <div class="signup-content">
+
+          <h2 class="form-title">Create account</h2>
+          <div class="form-group">
+            <input type="text" class="form-input" name="name" id="name" placeholder="Your Name" />
           </div>
-          <hr>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <form id="login-form" action="#" method="post" role="form" style="display: block;">
-                <p id="login-error" style="color:red;"></p>
-                <div class="form-group">
-                  <label for="username_login">Username</label>
-                  <input type="text" name="username" id="username_login" tabindex="1" class="form-control login-credential" placeholder="Username" value="">
-                </div>
-                <div class="form-group">
-                  <label for="password_login">Password</label>
-                  <input type="password" name="password" id="password_login" tabindex="2" class="form-control login-credential" placeholder="Password">
-                </div>
-                <!-- <div class="form-group text-center">
-                  <input type="checkbox" tabindex="3" class="" name="remember" id="remember">
-                  <label for="remember"> Remember Me</label>
-                </div> -->
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-sm-6 col-sm-offset-3">
-                      <input id="login" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login btn-submit" value="Log In">
-                    </div>
-                  </div>
-                </div>
-              </form>
-              <form id="register-form" action="#" method="post" role="form" style="display: none;">
-                <p style="color:red;" id="signup-error"></p>
-                <div class="form-group">
-                  <label for="fullName">Full name</label>
-                  <input type="text" name="fullName" id="fullName" tabindex="1" class="form-control signup-credential" placeholder="Full name" value="">
-                </div>
-                <div class="form-group">
-                  <label for="username">Username</label>
-                  <input type="text" name="username" id="username" tabindex="2" class="form-control signup-credential" placeholder="Username" value="">
-                </div>
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" name="email" id="email" tabindex="3" class="form-control signup-credential" placeholder="Email" value="">
-                </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" name="password" id="password" tabindex="4" class="form-control signup-credential" placeholder="Password">
-                </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-sm-6 col-sm-offset-3">
-                      <input id="signup" name="register-submit" id="register-submit" tabindex="6" class="form-control btn btn-register btn-submit" value="Register Now">
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
+          <div class="form-group">
+            <input type="email" class="form-input" name="email" id="email" placeholder="Your Email" />
           </div>
-        </div>
+          <div class="form-group">
+            <input type="text" class="form-input" name="password" id="password" placeholder="Password" />
+            <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-input" name="re_password" id="re_password" placeholder="Repeat your password" />
+          </div>
+          <div class="form-group">
+            <input type="submit" name="submit" id="submit" class="form-submit" value="Sign up" />
+          </div>
+
+        <p class="loginhere">
+          Have already an account ? <a href="login.html" class="loginhere-link">Login here</a>
+        </p>
       </div>
     </div>
-  </div>
+  </section>
 </div>
 
 </body>

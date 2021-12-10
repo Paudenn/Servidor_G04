@@ -1,27 +1,25 @@
 package edu.upc.dsa.models.api;
 
 public class CompleteCredentials {
-    private String username;
+    private String name;
     private String password;
-    private String fullName;
-    private String email;
+    private String mail;
 
-    public CompleteCredentials(String username, String password, String fullName, String email)
+    public CompleteCredentials(String name, String password, String mail)
     {
-        this.username = username;
+        this.name = name;
         this.password = password;
-        this.fullName = fullName;
-        this.email = email;
+        this.mail = mail;
     }
 
     public CompleteCredentials(){}
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String username) {
+        this.name = username;
     }
 
     public String getPassword() {
@@ -32,19 +30,11 @@ public class CompleteCredentials {
         this.password = password;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getMail() {
+        return mail;
     }
 
-    public void setFullName(String dateBirth) {
-        this.fullName = dateBirth;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String email) {
+        this.mail = email;
     }
 }

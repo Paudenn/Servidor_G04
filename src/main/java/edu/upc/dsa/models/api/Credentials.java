@@ -1,15 +1,15 @@
 package edu.upc.dsa.models.api;
 
 public class Credentials {
-    private String username;
+    private String name;
     private String password;
 
     public String getUsername() {
-        return username;
+        return name;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.name = username;
     }
 
     public String getPassword() {

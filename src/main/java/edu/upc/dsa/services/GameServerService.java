@@ -170,8 +170,7 @@ public class GameServerService {
         int res = gsm.loginUser(login.getName(),login.getPassword());
         if (login.getName()==null || login.getPassword()==null)  return Response.status(404).build();
         else if (res != 0) return Response.status(404).build();
-        else
-        return Response.status(201).entity(login).build();
+        else return Response.status(201).entity(login).build();
     }
     @GET
     @ApiOperation(value = "Logout", notes = "asdasd")
