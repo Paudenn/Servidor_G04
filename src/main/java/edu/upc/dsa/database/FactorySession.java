@@ -26,7 +26,7 @@ public class FactorySession {
         try {
 
             conn =
-                    DriverManager.getConnection("jdbc:mariadb://localhost:3306/dsag04", "root", "Mazinger72");
+                    DriverManager.getConnection("jdbc:mariadb://147.83.7.205:3306/dsag04", "root", "Mazinger72");
             System.out.println("Connectat a la bbdd correctament.");
 
 
