@@ -1,0 +1,61 @@
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.google.inject.internal.cglib.core.$ReflectUtils$1 (file:/usr/share/maven/lib/guice.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
+WARNING: Please consider reporting this to the maintainers of com.google.inject.internal.cglib.core.$ReflectUtils$1
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------------------< [0;36medu.upc.dsa:rest-example2[0;1m >----------------------[m
+[[1;34mINFO[m] [1mBuilding rest-example2 1.0-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m>>> [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[0;1m > [0;1mvalidate[m @ [36mrest-example2[0;1m >>>[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m<<< [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[0;1m < [0;1mvalidate[m @ [36mrest-example2[0;1m <<<[m
+[[1;34mINFO[m] 
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.google.inject.internal.cglib.core.$ReflectUtils$1 (file:/usr/share/maven/lib/guice.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
+WARNING: Please consider reporting this to the maintainers of com.google.inject.internal.cglib.core.$ReflectUtils$1
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------------------< [0;36medu.upc.dsa:rest-example2[0;1m >----------------------[m
+[[1;34mINFO[m] [1mBuilding rest-example2 1.0-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m>>> [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[0;1m > [0;1mvalidate[m @ [36mrest-example2[0;1m >>>[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m<<< [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[0;1m < [0;1mvalidate[m @ [36mrest-example2[0;1m <<<[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mexec-maven-plugin:1.2.1:java[m [1m(default-cli)[m @ [36mrest-example2[0;1m ---[m
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+dic. 14, 2021 1:01:03 P. M. org.glassfish.grizzly.http.server.NetworkListener start
+INFORMACIÓN: Started listener bound to [147.83.7.205:8080]
+dic. 14, 2021 1:01:03 P. M. org.glassfish.grizzly.http.server.HttpServer start
+INFORMACIÓN: [HttpServer] Started.
+Jersey app started with WADL available at http://147.83.7.205:8080/dsaApp/application.wadl
+Hit enter to stop it...
+[[1;33mWARNING[m] 
+[1;31mjava.lang.reflect.InvocationTargetException[m
+    [1mat[m jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 ([1mNative Method[m)
+    [1mat[m jdk.internal.reflect.NativeMethodAccessorImpl.invoke ([1mNativeMethodAccessorImpl.java:62[m)
+    [1mat[m jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke ([1mDelegatingMethodAccessorImpl.java:43[m)
+    [1mat[m java.lang.reflect.Method.invoke ([1mMethod.java:566[m)
+    [1mat[m org.codehaus.mojo.exec.ExecJavaMojo$1.run ([1mExecJavaMojo.java:297[m)
+    [1mat[m java.lang.Thread.run ([1mThread.java:829[m)
+[1mCaused by[m: java.io.IOException: [1;31mDescriptor de archivo erróneo[m
+    [1mat[m java.io.FileInputStream.readBytes ([1mNative Method[m)
+    [1mat[m java.io.FileInputStream.read ([1mFileInputStream.java:279[m)
+    [1mat[m java.io.BufferedInputStream.fill ([1mBufferedInputStream.java:252[m)
+    [1mat[m java.io.BufferedInputStream.read ([1mBufferedInputStream.java:271[m)
+    [1mat[m edu.upc.dsa.Main.main ([1mMain.java:69[m)
+    [1mat[m jdk.internal.reflect.NativeMethodAccessorImpl.invoke0 ([1mNative Method[m)
+    [1mat[m jdk.internal.reflect.NativeMethodAccessorImpl.invoke ([1mNativeMethodAccessorImpl.java:62[m)
+    [1mat[m jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke ([1mDelegatingMethodAccessorImpl.java:43[m)
+    [1mat[m java.lang.reflect.Method.invoke ([1mMethod.java:566[m)
+    [1mat[m org.codehaus.mojo.exec.ExecJavaMojo$1.run ([1mExecJavaMojo.java:297[m)
+    [1mat[m java.lang.Thread.run ([1mThread.java:829[m)
