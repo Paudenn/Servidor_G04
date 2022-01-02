@@ -55,13 +55,14 @@ public class ServerGameManagerImpl implements ServerGameManager {
                 session.save(user);
                 logger.info("name: " + name + "password: " + "email: " + email);
             }
+            else return attributes;
         } catch (Exception e) {
             logger.info("Error al insertar usuario");
         } finally {
             session.close();
         }
 
-        return this.addUser(new User(name, password, email));
+        return null;
 
     }
 
@@ -126,17 +127,17 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
-    public void updateScore(String name, String attribute, Object value) {
+    public void updateScore(int id, String attribute, Object value) {
         try {
             session = FactorySession.openSession();
-            User u = new User(name, null, null);
-            User attributes = session.getBy(User.class, "name", u);
+            User u = new User(null, null, null, id);
+            User attributes = session.getBy(User.class, "id", u);
             if (attributes != null) {
 
-                session.update(User.class, name, attribute, value);
+                session.update(User.class, id, attribute, value);
 
             } else {
-                logger.info(name + " not found");
+                logger.info("user not found");
 
             }
         } catch (Exception e) {
@@ -161,7 +162,9 @@ public class ServerGameManagerImpl implements ServerGameManager {
                             (String) h.get("name"),
                             (String) h.get("password"),
                             (String) h.get("mail"),
-                            (int) h.get("ID")
+                            (int) h.get("ID"),
+                            (int) h.get("highScore"),
+                            (int) h.get("active")
                     ));
                 }
             }

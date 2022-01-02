@@ -17,7 +17,7 @@ public interface ServerGameManager {
     public User getUser(int id);
     public void deleteUser(int id);
     public void logOutUser(int id);
-    public void updateScore (String name,String attribute,Object value);
+    public void updateScore (int id,String attribute,Object value);
     public User addToInventory (int id_u,int id_i);
     public List<Items> getUserItemList(int id);
 

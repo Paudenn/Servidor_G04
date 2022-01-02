@@ -65,7 +65,7 @@ public class QueryHelper {
     public static String createQueryUPDATEAttribute(Class theClass, String attribute)
     {
         String query = "UPDATE " + theClass.getSimpleName() + " SET ";
-        query = query + attribute + "=? WHERE name=?;";
+        query = query + attribute + "=? WHERE id=?;";
 
         return query;
     }

@@ -109,7 +109,7 @@ public class SessionImpl implements Session {
         return -1;
     }
 
-    public int update(Class theClass,String name, String attribute, Object value) {
+    public int update(Class theClass,int id, String attribute, Object value) {
 
         PreparedStatement preparedStatement = null;
         String query = QueryHelper.createQueryUPDATEAttribute(theClass, attribute);
@@ -118,7 +118,7 @@ public class SessionImpl implements Session {
         try {
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(2, name );
+            preparedStatement.setInt(2, id );
             preparedStatement.setInt(1, (int)value);
 
             preparedStatement.executeUpdate();
@@ -320,6 +320,7 @@ public class SessionImpl implements Session {
                 attributes.setLevel((int)resultSet.getObject(2));
                 attributes.setScore((int)resultSet.getObject(3));
                 attributes.setPlayerID((int)resultSet.getObject(4));
+
 
                 for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
 

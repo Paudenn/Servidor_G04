@@ -170,7 +170,10 @@ public class GameServerService {
     public Response loginUser(LoginAUX login) {
         User u = gsm.loginUser(login.getName(),login.getPassword());
         if (u.getName()==null || u.getPassword()==null)  return Response.status(404).build();
-        else return Response.status(201).entity(login).build();
+        else {
+            this.gsm.updateScore(u.getId(),"active",1);
+            return Response.status(201).entity(login).build();
+        }
     }
     @GET
     @ApiOperation(value = "Logout", notes = "asdasd")
@@ -182,11 +185,11 @@ public class GameServerService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response logoutUser(@PathParam("id") int id) {
         if (gsm.getUser(id)== null) return Response.status(404).build();
-        else gsm.logOutUser(id);
+        else this.gsm.updateScore(gsm.getUser(id).getId(),"active",0);
         return Response.status(201).build();
     }
     @PUT
-    @ApiOperation(value = "update a User HighScore", notes = "asdasd")
+    @ApiOperation(value = "update a User HighScore (by id)", notes = "asdasd")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "User not found")
@@ -194,7 +197,19 @@ public class GameServerService {
     @Path("/updatePlayerScore")
     public Response updateScore(User user) {
 
-        this.gsm.updateScore(user.getName(),"highScore",user.getHighScore());
+        this.gsm.updateScore(user.getId(),"highScore",user.getHighScore());
+        return Response.status(201).build();
+    }
+    @PUT
+    @ApiOperation(value = "update a User HighScore (by id)", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @Path("/updateActive")
+    public Response updateActive(User user) {
+
+        this.gsm.updateScore(user.getId(),"active",user.getActive());
         return Response.status(201).build();
     }
     @POST

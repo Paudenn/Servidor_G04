@@ -12,7 +12,7 @@ public interface Session<E> {
     void close();
     HashMap get(Class theClass, String attr, String value);
     int update(Object object);
-    int update(Class theClass,String name,String attribute, Object value);
+    int update(Class theClass,int id,String attribute, Object value);
     int saveItem(Class theClass,int id_u,String attribute,Object id, Object valueclass);
     int delete(Class theClass, String attribute, Object value);
     int deleteInventory(Class theClass, String attribute, Object value);

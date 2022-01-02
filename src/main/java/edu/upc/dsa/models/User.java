@@ -16,8 +16,8 @@ public class User {
         this.name = name;
         this.password = password;
         this.mail = mail;
-        //this.active = false;
         this.highScore = 0;
+        this.active = 0;
 
     }
     public User(String name, String password, String mail, int id) {
@@ -27,6 +27,15 @@ public class User {
         this.highScore = 0;
         this.id = id;
         this.active = 0;
+
+    }
+    public User(String name, String password, String mail, int id, int highScore, int active) {
+        this.name = name;
+        this.password = password;
+        this.mail = mail;
+        this.highScore = highScore;
+        this.id = id;
+        this.active = active;
 
     }
 

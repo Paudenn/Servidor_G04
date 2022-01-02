@@ -30,6 +30,13 @@ public class FactorySession {
             System.out.println("Connectat a la bbdd correctament.");
 
 
+            /*conn =
+                    DriverManager.getConnection("jdbc:mariadb://127.0.0.1:3306/dsag04", "root", "Mazinger72");
+            System.out.println("Connectat a la bbdd correctament.");
+
+             */
+
+
 
 
         } catch (SQLException ex) {
