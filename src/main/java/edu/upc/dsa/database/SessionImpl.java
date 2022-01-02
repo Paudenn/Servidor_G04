@@ -282,6 +282,8 @@ public class SessionImpl implements Session {
                 attributes.setPassword(resultSet.getObject(2).toString());
                 attributes.setMail(resultSet.getObject(3).toString());
                 attributes.setId((int)resultSet.getObject(4));
+                attributes.setHighScore((int)resultSet.getObject(5));
+                attributes.setActive((int)resultSet.getObject(6));
 
                 for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
 

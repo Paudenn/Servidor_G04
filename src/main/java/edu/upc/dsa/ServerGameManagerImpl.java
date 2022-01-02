@@ -66,7 +66,7 @@ public class ServerGameManagerImpl implements ServerGameManager {
     }
 
     @Override
-    public int loginUser(String name, String password) {
+    public User loginUser(String name, String password) {
 
         try {
             session = FactorySession.openSession();
@@ -75,23 +75,24 @@ public class ServerGameManagerImpl implements ServerGameManager {
             User passwordCheck = session.getBy(User.class, "password", u);
             if (nameCheck != null & passwordCheck != null) {
                 logger.info("Login successful!");
-                return 0;
+
+                return nameCheck;
             } else if (nameCheck == null & passwordCheck != null) {
                 logger.info("Nombre de usuario incorrecto");
-                return -1;
+                return null;
             } else if (passwordCheck == null & nameCheck != null) {
                 logger.info("Password incorrecto");
-                return -1;
+                return null;
             } else {
                 logger.info("Error al inserar usuario");
-                return -1;
+                return null;
             }
         } catch (Exception e) {
             logger.info("Error al encontrar usuario");
         } finally {
             session.close();
         }
-        return -1;
+        return null;
     }
 
     @Override

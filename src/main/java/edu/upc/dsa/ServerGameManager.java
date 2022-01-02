@@ -12,7 +12,7 @@ public interface ServerGameManager {
 
     public User addUser(User user);
     public User addUser(String name, String password, String email);
-    public int loginUser(String name, String password);
+    public User loginUser(String name, String password);
     public List<User> getUserList();
     public User getUser(int id);
     public void deleteUser(int id);
